@@ -1421,7 +1421,6 @@ list.
 
 ## Stateless Reset {#stateless-reset}
 
-
 A stateless reset is provided as an option of last resort for a server that does
 not have access to the state of a connection.  A server crash or outage might
 result in clients continuing to send data to a server that is unable to properly
@@ -1495,12 +1494,12 @@ discarded.
 
 ### Calculating a Stateless Reset Token
 
-In order to create a Stateless Reset Token, a server could randomly generate
-{{!RFC4086}} a secret for every connection that it creates.  However, this
-presents a coordination problem when there are multiple servers in a cluster or
-a storage problem for a server that might lose state.  Stateless reset
-specifically exists to handle the case where state is lost, so this approach is
-suboptimal.
+The stateless reset token MUST be difficult to guess.  In order to create a
+Stateless Reset Token, a server could randomly generate {{!RFC4086}} a secret
+for every connection that it creates.  However, this presents a coordination
+problem when there are multiple servers in a cluster or a storage problem for a
+server that might lose state.  Stateless reset specifically exists to handle the
+case where state is lost, so this approach is suboptimal.
 
 A single static key can be used across all connections to the same endpoint by
 generating the proof using a second iteration of a preimage-resistant function
