@@ -2152,8 +2152,8 @@ Connection ID:
 
 Stateless Reset Token:
 
-: A 128-bit value that replaces the token used for stateless reset
-  ({{stateless-reset}}).
+: A 128-bit value that will be used to for a stateless reset when the associated
+  connection ID is used (see {{stateless-reset}}).
 
 
 ## CONNECTION_CLOSE frame {#frame-connection-close}
