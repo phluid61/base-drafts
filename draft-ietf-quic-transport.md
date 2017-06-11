@@ -1008,6 +1008,7 @@ language from Section 3 of {{!I-D.ietf-tls-tls13}}.
       idle_timeout(3),
       truncate_connection_id(4),
       stateless_reset_token(5),
+      max_packet_size(6),
       (65535)
    } TransportParameterId;
 
@@ -1093,6 +1094,15 @@ truncate_connection_id (0x0004):
   the 5-tuple is sufficient to identify a connection.  This parameter is zero
   length.  Omitting the parameter indicates that the endpoint relies on the
   connection ID being present in every packet.
+
+max_packet_size (0x0005):
+
+: The maximum packet size parameter places a limit on the size of packets that
+  the endpoint is willing to receive, encoded as an unsigned 16-bit integer.
+  This indicates that packets larger than this limit will be dropped.  The
+  default for this parameter is the maximum permitted UDP payload of 65527.
+  Values below 1252 are invalid.  This limit only applies to protected packets
+  ({{packet-protected}}).
 
 
 ### Values of Transport Parameters for 0-RTT {#zerortt-parameters}
@@ -1554,11 +1564,13 @@ These bits are parsed as follows:
   The option to omit the length should only be used when the packet is a
   "full-sized" packet, to avoid the risk of corruption via padding.
 
-* The `OO` bits encode the length of the Offset header field as 0, 16, 32,
-  or 64 bits long.
+* The `SS` bits encode the length of the Stream ID header field.
+  The values 00, 01, 02, and 03 indicate lengths of 8, 16, 24, and 32 bits
+  long respectively.
 
-* The `SS` bits encode the length of the Stream ID header field as 8, 16, 24,
-  or 32 bits.
+* The `OO` bits encode the length of the Offset header field.
+  The values 00, 01, 02, and 03 indicate lengths of 0, 16, 32, and
+  64 bits long respectively.
 
 A STREAM frame is shown below.
 
@@ -1656,7 +1668,7 @@ frames. A receiver MAY send timestamps for non-retransmittable packets.
 A receiver MUST not send timestamps in unprotected packets.
 
 A sender MAY intentionally skip packet numbers to introduce entropy into the
-connection, to avoid opportunistic acknowledgement attacks.  The sender MUST
+connection, to avoid opportunistic acknowledgement attacks.  The sender SHOULD
 close the connection if an unsent packet number is acknowledged.  The format of
 the ACK frame is efficient at expressing blocks of missing packets; skipping
 packet numbers between 1 and 255 effectively provides up to 8 bits of efficient
@@ -3229,6 +3241,7 @@ The initial contents of this registry are shown in
 | 0x0003 | idle_timeout            | {{transport-parameter-definitions}} |
 | 0x0004 | truncate_connection_id  | {{transport-parameter-definitions}} |
 | 0x0005 | stateless_reset_token   | {{transport-parameter-definitions}} |
+| 0x0006 | max_packet_size         | {{transport-parameter-definitions}} |
 {: #iana-tp-table title="Initial QUIC Transport Parameters Entries"}
 
 
